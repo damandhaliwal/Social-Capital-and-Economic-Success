@@ -1,0 +1,38 @@
+# Data files
+*.txt
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.feather
+*.dta
+*.sav
+*.json
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+*.ipynb
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# IDE settings
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Output files
+Output/
+
+# docs
+*.pdf
