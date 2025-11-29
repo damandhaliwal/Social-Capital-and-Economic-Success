@@ -11,7 +11,7 @@ import glob
 import re
 
 
-def load_data(overwrite=False):
+def load_data(overwrite = False):
     """
     Load or create business panel and survival datasets.
 
@@ -115,3 +115,95 @@ def load_data(overwrite=False):
     print("Data saved successfully!")
 
     return combined, survival
+
+# social capital data
+def load_social_capital():
+    """
+    Load social capital dataset.
+
+    Returns:
+    --------
+    pl.DataFrame
+        Social capital data with FIPS codes.
+    """
+    path = paths()
+    sc_path = os.path.join(path['data_input'], 'OI_data', 'social_capital_county.csv')
+    
+    sc = pl.read_csv(sc_path)
+    
+    # Select and rename columns
+    sc = sc.select([
+        pl.col("county").cast(pl.String).str.zfill(5).alias("fips"),
+        pl.col("ec_county").alias("ec"),
+        pl.col("clustering_county").alias("clustering"),
+        pl.col("civic_organizations_county").alias("civic"),
+    ])
+    
+    return sc
+
+# merge the datasets
+def merged_survival(overwrite = False):
+    """
+    Merge business survival data with social capital data.
+
+    Returns:
+    --------
+    pl.DataFrame
+        Merged dataset.
+    """
+    path = paths()
+    output_path = os.path.join(path['data'], "survival_merged.parquet")
+    
+    if not overwrite and os.path.exists(output_path):
+        print("Loading existing merged data...")
+        return pl.read_parquet(output_path)
+    
+    print("Building merged dataset...")
+    _ , survival = load_data(overwrite=False)
+    sc = load_social_capital()
+    
+    # Merge datasets on FIPS code
+    merged = survival.join(sc, on="fips", how="left")
+    
+    # Check merge rate
+    n_matched = merged.filter(pl.col("ec").is_not_null()).height
+    print(f"Merge rate: {n_matched / len(merged):.1%}")
+    
+    # Save
+    merged.write_parquet(output_path)
+    print(f"✓ Saved: {output_path}")
+    
+    return merged
+
+def merged_combined(overwrite = False):
+    """
+    Merge business combined data with social capital data.
+
+    Returns:
+    --------
+    pl.DataFrame
+        Merged dataset.
+    """
+    path = paths()
+    output_path = os.path.join(path['data'], "combined_merged.parquet")
+    
+    if not overwrite and os.path.exists(output_path):
+        print("Loading existing merged data...")
+        return pl.read_parquet(output_path)
+    
+    print("Building merged dataset...")
+    combined, _ = load_data(overwrite=False)
+    sc = load_social_capital()
+    
+    # Merge datasets on FIPS code
+    merged = combined.join(sc, on="fips", how="left")
+    
+    # Check merge rate
+    n_matched = merged.filter(pl.col("ec").is_not_null()).height
+    print(f"Merge rate: {n_matched / len(merged):.1%}")
+    
+    # Save
+    merged.write_parquet(output_path)
+    print(f"✓ Saved: {output_path}")
+    
+    return merged
