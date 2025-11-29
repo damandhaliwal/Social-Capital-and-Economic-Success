@@ -1,15 +1,15 @@
-# DML Heterogeneity Analysis by Industry
+# DML Heterogeneity Analysis by Sub-Industries
 # Daman Dhaliwal
 
 # import libraries
 import pandas as pd
-import doubleml as dml
 import numpy as np
+import doubleml as dml
 from xgboost import XGBRegressor, XGBClassifier
 
-from data_prep import merged_survival
+from data_prep import merged_survival 
 
-def run_industry_dml(overwrite = False):
+def run_sub_industry_dml(overwrite = False):
     data = merged_survival(overwrite = overwrite)
 
     data = data.to_pandas()
@@ -20,6 +20,9 @@ def run_industry_dml(overwrite = False):
     print(f"Dropped {initial_len - len(data)} rows due to missing required columns.")
 
     data = data.drop('firm_age', axis = 1)
+
+    # create naics 4 code for industry
+    data['naics4'] = data['naics'].astype(str).str[:4]
 
     # standardize all continuous variables - employees, sales, ec, clustering, civic
     data['ec_std'] = (data['ec'] - data['ec'].mean()) / data['ec'].std()
@@ -32,19 +35,18 @@ def run_industry_dml(overwrite = False):
     # create dummies for controls (state only)
     data = pd.get_dummies(data, columns = ['state'], drop_first = True)
 
-    industries = data['naics2'].unique()
+    sub_industries = data['naics4'].unique()
 
     results = []
 
-    for ind in industries:
-        df = data[data['naics2'] == ind].copy()
+    for ind in sub_industries:
+        df = data[data['naics4'] == ind].copy()
 
-        if len(df) < 1000:
+        if len(df) < 500:
             continue
 
         print(ind, len(df))
 
-        # keep only state dummies and employees as controls
         valid_cols = ['log_sales'] + [c for c in df.columns if c.startswith('state_')]
         valid_cols = [c for c in valid_cols if df[c].nunique() > 1]
 
@@ -78,5 +80,6 @@ def run_industry_dml(overwrite = False):
     print(results_df)
     return results_df
 
+
 if __name__ == "__main__":
-    run_industry_dml()
+    run_sub_industry_dml()
