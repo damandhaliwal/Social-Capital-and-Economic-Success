@@ -31,20 +31,58 @@ def run_ols_survival(overwrite = False):
     formula = "survived_2024 ~ ec_std + log_sales + log_employees + C(state) + C(naics2)"
 
     model = smf.ols(formula = formula, data = data).fit(cov_type = 'cluster', cov_kwds = {'groups': data['fips']})
+    print(model.summary())
 
-    print(f"Social Capital (ec_std) Coefficient: {model.params['ec_std']:.5f}")
-    print(f"Standard Error:                      {model.bse['ec_std']:.5f}")
-    print(f"P-value:                             {model.pvalues['ec_std']:.5f}")
-    print(f"Confidence Interval (95%):           [{model.conf_int().loc['ec_std'][0]:.5f}, {model.conf_int().loc['ec_std'][1]:.5f}]")
+    return model
+
+def run_ols_main(overwrite = False):
+    df = merged_combined(overwrite = overwrite)
+    df = df.to_pandas()
+
+    # prep baseline 2019
+    cols = ['abi', 'fips', 'sales', 'employees', 'naics', 'ec', 'clustering', 'civic']
+    cols = [c for c in cols if c in df.columns]
     
-    print("-" * 60)
-    print(f"R-squared:                           {model.rsquared:.4f}")
-    print(f"Observations:                        {model.nobs:,.0f}")
+    data_2019 = df[df['file_year'] == 2019][cols].copy()
+    data_2019 = data_2019.rename(columns={'sales': 'sales_2019', 'employees': 'emp_2019'})
 
+    # prep outcome 2024
+    data_2024 = df[df['file_year'] == 2024][['abi', 'sales']].copy()
+    data_2024 = data_2024.rename(columns={'sales': 'sales_2024'})
+
+    # merge and fill
+    merged = data_2019.merge(data_2024, on='abi', how='left')
+    merged['sales_2024'] = merged['sales_2024'].fillna(0)
+
+    # filter for survivors only (intensive margin)
+    merged = merged[merged['sales_2024'] > 0]
+
+    # drop missing
+    merged = merged.dropna(subset = ['sales_2019', 'ec', 'fips', 'emp_2019', 'naics'])
+    merged = merged[merged['sales_2019'] > 0]
+
+    # transformations
+    merged['log_sales_2019'] = np.log1p(merged['sales_2019'])
+    merged['log_sales_2024'] = np.log1p(merged['sales_2024'])
+    merged['log_sales_change'] = merged['log_sales_2024'] - merged['log_sales_2019']
+
+    # standardize and log controls
+    merged['ec_std'] = (merged['ec'] - merged['ec'].mean()) / merged['ec'].std()
+    merged['clustering_std'] = (merged['clustering'] - merged['clustering'].mean()) / merged['clustering'].std()
+    merged['civic_std'] = (merged['civic'] - merged['civic'].mean()) / merged['civic'].std()
+    
+    merged['log_emp_2019'] = np.log1p(merged['emp_2019'])
+    merged['state'] = merged['fips'].astype(str).str[:2]
+    merged['naics2'] = merged['naics'].astype(str).str[:2]
+
+    # run regression
+    formula = "log_sales_change ~ ec_std + log_sales_2019 + log_emp_2019 + C(state) + C(naics2)"
+    
+    model = smf.ols(formula = formula, data = merged).fit(cov_type = 'cluster', cov_kwds = {'groups': merged['fips']})
     print(model.summary())
 
     return model
 
 if __name__ == "__main__":
-    run_ols_survival()
+    run_ols_main()
     
