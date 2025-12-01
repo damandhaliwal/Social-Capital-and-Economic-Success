@@ -185,9 +185,176 @@ where $Q_{\tau}(Y_i \mid SC_c, X_i)$ denotes the $\tau$-th conditional quantile 
 Quantile regression allows us to test competing hypotheses about social capital's distributional effects. If social capital provides downside protection, we expect larger effects at lower quantiles. If social capital amplifies success, we expect larger effects at upper quantiles.
 
 \section{Empirical Results}
+\subsection{OLS Results}
+\begin{table}[H]
+\centering
+\caption{OLS Estimates of Social Capital Effects on Firm Survival and Growth}
+\label{tab:ols_results}
+\small
+\resizebox{\textwidth}{!}{\begin{tabular}{lcccccccc}
+\toprule
+& \multicolumn{4}{c}{Panel A: Survival (2019--2024)} & \multicolumn{4}{c}{Panel B: Sales Growth} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9}
+& (1) & (2) & (3) & (4) & (5) & (6) & (7) & (8) \\
+\midrule
+Economic Connectedness & $-$0.0021* &  &  & $-$0.0016 & 0.0068*** &  &  & 0.0079*** \\
+& (0.001) &  &  & (0.001) & (0.001) &  &  & (0.001) \\[0.5em]
+Cohesion &  & 0.0079*** &  & 0.0080*** &  & 0.0031*** &  & 0.0051*** \\
+&  & (0.001) &  & (0.001) &  & (0.001) &  & (0.001) \\[0.5em]
+Civic Engagement &  &  & 0.0020 & $-$0.0004 &  &  & $-$0.0014 & $-$0.0043*** \\
+&  &  & (0.001) & (0.001) &  &  & (0.001) & (0.001) \\[0.5em]
+Log Employees & 0.0317*** & 0.0321*** & 0.0318*** & 0.0321*** &  &  &  &  \\
+& (0.000) & (0.000) & (0.000) & (0.000) &  &  &  &  \\[0.5em]
+Log Sales 2019 &  &  &  &  & $-$0.0952*** & $-$0.0949*** & $-$0.0952*** & $-$0.0950*** \\
+&  &  &  &  & (0.001) & (0.001) & (0.001) & (0.001) \\[0.5em]
+\midrule
+State FE & Yes & Yes & Yes & Yes & Yes & Yes & Yes & Yes \\
+Industry FE & Yes & Yes & Yes & Yes & Yes & Yes & Yes & Yes \\
+Observations & 13,821,668 & 13,821,668 & 13,821,668 & 13,821,668 & 8,894,396 & 8,894,396 & 8,894,396 & 8,894,396 \\
+$R^2$ & 0.012 & 0.012 & 0.012 & 0.012 & 0.181 & 0.181 & 0.181 & 0.181 \\
+\bottomrule
+\end{tabular}}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Clustered standard errors at the county level in parentheses. Panel A reports linear probability model estimates where the dependent variable equals 1 if the firm survived to 2024. Panel B reports OLS estimates where the dependent variable is log sales change from 2019 to 2024, conditional on survival. All social capital measures are standardized. * $p < 0.10$, ** $p < 0.05$, *** $p < 0.01$.
+\end{tablenotes}
+\end{table}
+
+The table above presents the OLS estimates of the effects of social capital components on firm survival and sales growth. In Panel A, we observe that social cohesion has a positive and statistically significant effect on firm survival, with a one standard deviation increase in cohesion associated with a 0.79 percentage point increase in survival probability (Column 2). Economic connectedness shows a negative effect on survival (Column 1), while civic engagement is not statistically significant (Column 3). When all three components are included simultaneously (Column 4), cohesion remains significant, while the effects of economic connectedness and civic engagement become insignificant.
+
+In Panel B, we find that economic connectedness and social cohesion components of social capital positively influence sales growth while civic engagement is statistically insignificant. Economic connectedness has the largest effect, with a one standard deviation increase leading to a 0.68\% increase in sales growth (Column 5). Cohesion also shows positive effects, though smaller in magnitude (Columns 6 and 7). When all components are included together (Column 8), economic connectedness and cohesion remain significant, while civic engagement becomes negative and significant.
+
+\subsection{DML Results}
+\begin{table}[htbp]
+\centering
+\caption{Comparison of Estimates: OLS vs. Double Machine Learning (DML)}
+\label{tab:ols_vs_dml}
+\setlength{\tabcolsep}{8pt} % Adjusted spacing for clarity
+\begin{tabular}{lcc}
+\toprule
+& \multicolumn{2}{c}{Dependent Variable: Firm Survival (Indicator)} \\
+\cmidrule(lr){2-3}
+Variable & (1) OLS Estimate & (2) DML Estimate \\
+\midrule
+Economic Connectedness & $-$0.0016 & $-$0.0026*** \\
+& (0.001) & (0.000) \\
+[0.5em]
+Cohesion (Clustering) & 0.0080*** & 0.0099*** \\
+& (0.001) & (0.000) \\
+[0.5em]
+Civic Engagement & $-$0.0004 & 0.0028*** \\
+& (0.001) & (0.000) \\
+\midrule
+Method & Linear Regression & Double ML \\
+Controls & State + Ind. FE & High-Dim Controls \\
+Inference & Clustered SE & Neyman Orthogonal \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textit{Notes:} Column (1) reproduces Model (4) from Table \ref{tab:ols_results}. Column (2) reports results from the baseline DML specification. Significance levels: * $p < 0.10$, ** $p < 0.05$, *** $p < 0.01$.
+\end{tablenotes}
+\end{table}
+
+The DML results refine the OLS findings by flexibly controlling for confounders. As shown in Table \ref{tab:ols_vs_dml}, the DML estimates (Column 2) indicate that all three components of social capital significantly affect firm survival, with cohesion having the largest effect (0.99 percentage points per standard deviation). Economic connectedness still shows a negative effect but it is now statistically signficant while civic engagement shows positive and statistically significant effects, contrasting with the OLS results where economic connectedness was negative and civic engagement was insignificant.
+
+This suggests that OLS may have suffered from omitted variable bias, which DML helped to address. The DML approach provides more credible estimates of the causal effects of social capital on firm survival. Given that cohesion consistently shows the strongest positive effect, we focus on it for the subsequent heterogeneity analysis.
+
+\subsection{Heterogeneous Treatment Effects by Industry}
+\begin{table}[H]
+\centering
+\caption{Heterogeneous Effects of Social Capital by Industry (Double Machine Learning)}
+\label{tab:heterogeneity}
+\footnotesize % Reduces font size to fit the long list
+\setlength{\tabcolsep}{4pt} % Slightly tighter column spacing
+\begin{tabular}{cllcc}
+\toprule
+\textbf{NAICS} & \textbf{Industry Sector} & \textbf{Observations} & \textbf{Estimate} & \textbf{Sig.} \\
+\midrule
+49 & Transportation \& Warehousing & 43,537 & 0.0322 & *** \\
+51 & Information & 259,785 & 0.0319 & *** \\
+55 & Management of Companies & 29,677 & 0.0181 & *** \\
+52 & Finance \& Insurance & 733,756 & 0.0174 & *** \\
+71 & Arts, Entertainment \& Recreation & 257,977 & 0.0131 & *** \\
+54 & Professional, Scientific \& Tech. Svcs & 1,289,754 & 0.0124 & *** \\
+22 & Utilities & 24,357 & 0.0104 & *** \\
+42 & Wholesale Trade & 409,814 & 0.0101 & *** \\
+56 & Admin., Support \& Waste Mgmt & 480,318 & 0.0101 & *** \\
+44 & Retail Trade (Store) & 1,192,053 & 0.0101 & *** \\
+99 & Unclassified Establishments & 88,362 & 0.0094 & *** \\
+81 & Other Services (excl. Public Admin) & 1,562,354 & 0.0085 & *** \\
+48 & Transportation (Air, Rail, Truck) & 225,369 & 0.0083 & *** \\
+61 & Educational Services & 316,053 & 0.0083 & *** \\
+72 & Accommodation \& Food Services & 880,327 & 0.0083 & *** \\
+33 & Manufacturing (Durable Goods) & 244,499 & 0.0078 & *** \\
+92 & Public Administration & 357,384 & 0.0077 & *** \\
+45 & Retail Trade (Non-Store) & 492,771 & 0.0066 & *** \\
+53 & Real Estate, Rental \& Leasing & 649,397 & 0.0060 & *** \\
+32 & Manufacturing (Non-Durable) & 99,063 & 0.0054 & ** \\
+31 & Manufacturing (Food/Textiles) & 79,944 & 0.0036 & \\
+23 & Construction & 958,139 & 0.0020 & ** \\
+21 & Mining, Oil \& Gas & 20,111 & 0.0002 & \\
+62 & Health Care \& Social Assistance & 3,025,049 & $-$0.0024 & *** \\
+11 & Agriculture, Forestry \& Fishing & 101,818 & $-$0.0095 & *** \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item \textit{Notes:} Estimates represent the Group Average Treatment Effects (GATEs) of standardized social capital on firm survival probability, estimated via Double Machine Learning. Industries are defined by 2-digit NAICS codes. Significance levels: * $p < 0.10$, ** $p < 0.05$, *** $p < 0.01$.
+\end{tablenotes}
+\end{table}
+It can be observed from Table \ref{tab:heterogeneity} that the effect of social cohesion on firm survival varies significantly across industries. The Transportation \& Warehousing sector (NAICS 49) exhibits the largest positive effect, with a 3.22 percentage point increase in survival probability per standard deviation increase in social cohesion. This is followed closely by the Information sector (NAICS 51) and Management of Companies (NAICS 55), both showing substantial positive effects.
+
+It is very interesting to note that Health Care \& Social Assistance (NAICS 62) shows a negative effect of social cohesion on firm survival, with a 2.4 percentage point decrease per standard deviation increase. This counterintuitive finding may reflect unique dynamics in the healthcare sector during the pandemic, such as increased regulatory pressures or shifts in demand that are not mitigated by social capital.
+
+To probe this deeper, we conduct a sub-industry level analysis. It is found that the information sector's positive effect is driven primarily through wireless telecommunications carriers. Given the work from home mandate during the pandemic and the rise of digital communication, this finding aligns with expectations.
+
+Another striking result was in the retail sector where essential retail exhibited strong positive effects while non-essential retail such as electronics stores showed negative effects. Furthermore, the negative effect in healthcare was concentrated in the independent physician offices while trust based sub-industries such as nursing care facilities, childcare facilities, and mental health services showed a positive effect. 
+
+Overall, the heterogeneity analysis underscores that the benefits of social cohesion are not uniform across industries. Sectors that rely heavily on information flow, coordination, and community engagement tend to benefit the most from social capital during crises. In contrast, sectors facing unique challenges during the pandemic may not experience the same protective effects.
+
+\subsection{Quantile Regression Results}
+The quantile regression results provide insights into how the effects of social capital vary across the distribution of firm performance. The plot below summarizes the estimated coefficients for each type of social capital at different quantiles of firm survival probability:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../Output/Plots/Figure_1.png}
+    \caption{Quantile Regression Estimates of Social Capital Effects on Sales Growth}
+    \label{fig:quantile_regression}
+\end{figure}
+
+Economic connectness exhibits a u shaped pattern where its effect is significantly negative for the bottom quantiles, flat in the middle and positive for the top quantiles. This implies that connection to high SES networks provide leverage for high performing firms but may impose costs on low performing firms.
+
+Social cohesion shows a striking result where is provides a massive boost to the lower-middle distribution but has a negative effect at the extreme tails. This suggests that social cohesion acts as a safety net for struggling firms but may create conformity pressures that hinder the best and worst performers.
+
+Civic engagement is negative for struggling firms but turns positive for high performing firms. This indicates that civic engagement may divert resources from survival efforts for weak firms but enhances reputation and networks for successful firms which is evidenced by literature as well.
+
+
+\subsection{Results Discussion}
+Our analysis yields a multi-faceted view of how social capital influences firm resilience during a crisis and firm growth. By using an OLS model, Double Machine Learning, and Quantile Regressions, we establish that social capital cannot be classified as good or bad across industries and firms but rather presents a set of distinct mechanisms with heterogeneous effects across firm performance distribution and industrial sectors. 
+
+For the analysis concerning firm performance during a crisis, it is clear that social cohesion emerges as the primary driver of survival. In our preferred DML specification, one standard deviation increase in cohesion increases survival probability by nearly one percentage point. They suggest that social capital creates a safety net and can prevent local businesses from bankruptcies during exogenous shocks.
+
+Conversely, while economic connectedness was one of the key drivers of upward economic mobility for individuals, it had a small but significant negative effect on the survival of the firms during a crisis. It's also revealed that economic connectedness prefers to support businesses that are operating at a higher level and support the 90th quantile of the performance distribution. 
+
+It should also be noted that the protective power of social capital was not uniform across the economy. Our heterogeneity analysis showed that the benefits of social capital were concentrated in the information and transportation sectors that rely on rapid information flow and coordination. There was also a surprising negative effect in the healthcare sector where higher social capital was associated with lower survival rates. This could be due to the exogenous shock being a healthcare crisis and thus there was higher stress in these industries. 
 
 
 \section{Conclusion}
+This paper investigates the role of social capital in influencing business performance. Specifically, we leverage the exogenous economic shock of the 2020 COVID-19 pandemic to decompose the causal effects of social capital on firm resilience and to study whether social capital has a direct effect on firm performance over the years. By integrating high-dimensional administrative data with novel measures on social structure and applying double machine learning quantile regressions and OLS frameworks, we challenged the view of social capital as a one-size-fits-all social surplus or a social negative. Instead, our results show that social capital is a complex landscape with different dimensions of social structure serving competing economic functions. 
+
+Our findings have important implications for policymakers and business leaders. First, fostering social cohesion within communities can enhance the resilience of local businesses during economic downturns. Second, strategies to build economic connectedness should be tailored to support high-performing firms, while recognizing that such connections may not benefit all businesses equally. Finally, the heterogeneous effects across industries highlight the need for sector-specific approaches to leveraging social capital for economic development.
+
+Our central finding highlighted that in tight-knit communities, the ability to mobilize collective action and informal safety nets acts as a primary defense against exogenous shocks. This is what was labeled as social cohesion. Conversely, contrary to research about individual economic outcomes, economic connectedness served as an amplifier of business performance for the top-performing firms. For the firms at the bottom end of the sales growth distribution, it was actually detrimental.
+
+Methodologically, our results underscore the limitations of OLS in this sector of research. The application of double machine learning revealed that the estimates provided by the OLS suffered from bias regarding economic connectedness and civic engagement. By correcting for these non-linearities, we do learn that while economic connectedness does have a negative effect on firm survival, civic engagement acts as social goodwill that does confer survival benefits upon firms and has a small positive effect on their survival during exogenous shocks.
+
+Given that the social capital data was built in 2022, we do realize the limitation that we cannot generalize for the temporal component of this causal effect. Future research avenues include:
+1. Building similar databases and indexes across different time periods, 
+2. Ensuring the robustness of findings across different economic shocks, 
+3. Exploring the institutional mechanisms that derive social capital formation and maintenance, and
+4. Investigating the micro-level firm strategies that leverage social capital for resilience and growth.
+
+As economies face global shocks from an increasingly volatile world, it is important to understand what factors contribute to economic resilience and success. Our analysis can inform investors, business leaders, and policymakers about the type of social capital that can positively affect a community as well as where to direct capital. 
 
 \pagebreak
 \bibliography{references}

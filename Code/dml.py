@@ -6,8 +6,10 @@ import pandas as pd
 import doubleml as dml
 import numpy as np
 from xgboost import XGBRegressor, XGBClassifier
+import os
 
 from data_prep import merged_survival
+from utils import paths
 
 def run_dml_survival(overwrite = False):
     data = merged_survival(overwrite = overwrite)

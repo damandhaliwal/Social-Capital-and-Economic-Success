@@ -85,5 +85,56 @@ def run_quantreg(overwrite = False):
 
     return results_df, merged
 
+# ... [Your existing code from above goes here] ...
+
+import matplotlib.pyplot as plt
+
+def plot_quantile_results(results_df):
+
+    plt.style.use('seaborn-v0_8-whitegrid')
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5), sharey=True)
+    
+    # Variables to plot mapping
+    variables = [
+        {'col': 'ec', 'title': 'Economic Connectedness', 'color': '#1f77b4'}, # Blue
+        {'col': 'clustering', 'title': 'Cohesion (Clustering)', 'color': '#d62728'}, # Red
+        {'col': 'civic', 'title': 'Civic Engagement', 'color': '#2ca02c'}  # Green
+    ]
+    
+    for i, var in enumerate(variables):
+        ax = axes[i]
+        col_name = var['col']
+        
+        # Extract data
+        quantiles = results_df['quantile']
+        coefs = results_df[f'{col_name}_coef']
+        errors = results_df[f'{col_name}_se']
+        
+        # Calculate 95% Confidence Intervals
+        upper = coefs + 1.96 * errors
+        lower = coefs - 1.96 * errors
+        
+        # Plot coefficients
+        ax.plot(quantiles, coefs, color=var['color'], lw=2, label='Quantile Estimate')
+        
+        # Fill Confidence Interval
+        ax.fill_between(quantiles, lower, upper, color=var['color'], alpha=0.2, label='95% CI')
+        
+        # Add reference line at 0
+        ax.axhline(0, color='black', linestyle='--', linewidth=1, alpha=0.7)
+        
+        # Formatting
+        ax.set_title(var['title'], fontsize=14, fontweight='bold')
+        ax.set_xlabel('Quantile ($tau$)', fontsize=12)
+        if i == 0:
+            ax.set_ylabel('Coefficient Estimate (Log Sales Change)', fontsize=12)
+        
+        ax.set_xticks(np.arange(0.1, 1.0, 0.1))
+        
+    plt.tight_layout()
+    plt.show()
+
 if __name__ == "__main__":
-    run_quantreg()
+    results, data = run_quantreg() 
+
+    plot_quantile_results(results)
