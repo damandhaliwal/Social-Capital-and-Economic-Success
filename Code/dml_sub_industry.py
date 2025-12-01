@@ -47,14 +47,14 @@ def run_sub_industry_dml(overwrite = False):
 
         print(ind, len(df))
 
-        valid_cols = ['log_sales'] + [c for c in df.columns if c.startswith('state_')]
+        valid_cols = ['log_sales', 'ec_std', 'civic_std'] + [c for c in df.columns if c.startswith('state_')]
         valid_cols = [c for c in valid_cols if df[c].nunique() > 1]
 
         # setup DoubleML
         dml_data = dml.DoubleMLData(
             df,
             y_col = 'survived_2024',
-            d_cols = 'ec_std',
+            d_cols = 'clustering_std',
             x_cols = valid_cols
         )
 
