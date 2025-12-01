@@ -56,7 +56,7 @@ Recently, \cite{chetty_social_2022-1} utilized a novel dataset from Facebook tha
 
 This paper aims to build upon the findings of \cite{chetty_social_2022-1} by exploring the relationship between social capital and business performance, which has not been extensively studied in the existing literature. We will investigate two aspects of business performance: (1) the likelihood of business survival given an exogenous shock (the COVID-19 pandemic), and (2) the revenue growth of businesses over time. By analyzing these dimensions, we aim to provide a comprehensive understanding of how social capital influences business outcomes.
 
-The research question is motivated by two main questions: First, does social captial contribute to the prosperity of counties by enhancing the performance of local businesses? Second, can social capital act as a buffer for businesses during economic downturns or crises, such as the COVID-19 pandemic? The results of this study could have significant implications for policymakers and business leaders, as they highlight the importance of fostering social capital within communities to support economic growth and resilience as well as inform strategies for capital allocation. The study may also motivate individals and businesses to invest in building and maintaining strong social networks.
+The research question is motivated by two main questions: First, does social capital contribute to the prosperity of counties by enhancing the performance of local businesses? Second, can social capital act as a buffer for businesses during economic downturns or crises, such as the COVID-19 pandemic? The results of this study could have significant implications for policymakers and business leaders, as they highlight the importance of fostering social capital within communities to support economic growth and resilience as well as inform strategies for capital allocation. The study may also motivate individals and businesses to invest in building and maintaining strong social networks.
 
 The paper is structured as follows: Section 2 reviews related literature in depth and defines the scope of the study in the context of existing research. Section 3 describes the data sources, including the social capital index, in depth and outlines the empirical model and identification strategy. Section 4 presents the main results and robustness checks. Finally, Section 5 concludes with a summary of findings and discusses potential avenues for future research.
 
@@ -67,7 +67,7 @@ The idea was then studied extensively by other scholars such as \cite{putnam_soc
 
 Over the years, there have been numerous economic studies aiming to model and quantify social capital and its effects on various economic outcomes. \cite{dasgupta2003social} provides a rigorous economic model of social capital. The central contribution of the paper is to show how social capital can be modeled into standard macroeconomic production functions. The author also argues that dense social networks can inhibit the flow of capital and labour and might lead to equilibria that are suboptimal for economic growth. 
 
-More recently, \cite{chetty_social_2022-1} and \cite{chetty_social_2022-2} utilized a novel dataset from Facebook that included over 21 billion social connections and modern computational techniques to form a first of its kind social capital index at the college, county, high school, and zip code levels across the United States. The authors meaningful results that revitalized interest in social capital research. In particular, they found that children who grow up in areas where cross-class interactions are common tend to have signficantly higher upward income mobility. They also found that social capital tends to be highly stratified by socioeconomic status and that differences in this economic connectedness accounts for the relationships between upward mobility and factors such as poverty and racial segreagation.
+More recently, \cite{chetty_social_2022-1} and \cite{chetty_social_2022-2} utilized a novel dataset from Facebook that included over 21 billion social connections and modern computational techniques to form a first of its kind social capital index at the college, county, high school, and zip code levels across the United States. The authors meaningful results that revitalized interest in social capital research. In particular, they found that children who grow up in areas where cross-class interactions are common tend to have significantly higher upward income mobility. They also found that social capital tends to be highly stratified by socioeconomic status and that differences in this economic connectedness accounts for the relationships between upward mobility and factors such as poverty and racial segreagation.
 
 There has also been research exploring the relationship between social capital and public health outcomes. \cite{makridis_how_2021} investigate whether areas with higher social capital experienced better health outcomes during the COVID-19 pandemic. They found that moving from the 25th to the 75th percentile of social capital is associated with a 18\% reduction in COVID-19 cases and a 5.7\% reduction in COVID-19 deaths. 
 
@@ -90,7 +90,7 @@ Social Cohesion included measures such as clustering, which indicate the extent 
 \subsubsection{United States Historical Business Data}
 To complement the social capital data, we utilize the United States historical business data from \cite{SP3/GY5K1C_2022}. This dataset contains detailed information on business establishments across the United States, including data on industry classification, employment, revenue, and survival status over time. The data spans multiple years, allowing for longitudinal analysis of business performance and is collected by Data Axle, a leading provider of business data and analytics.
 
-The two datasets are merged using county FIPS codes to create a comprehensive dataset that includes both social capital measures and business performance metrics at the county level. The social capital index was constructed in 2022, which limits the temporal scope of the analysis. It has been assumed that social capital exhibited relative stability over the short to medium term, allowing for its application in analyzing business performance during the COVID-19 pandemic period (2020-2021). The Data Axle data was used for the years 2019-2024 to capture business performance before, during, and after the pandemic.
+The two datasets are merged using county FIPS codes to create a comprehensive dataset that includes both social capital measures and business performance metrics at the county level. The social capital index was constructed in 2022, which limits the temporal scope of the analysis. Following \cite{chetty_social_2022-2}, we assume that social capital exhibits relative stable behaviour over the short to medium term, allowing for its application in analyzing business performance during the COVID-19 pandemic period (2020-2021). The Data Axle data was used for the years 2019-2024 to capture business performance before, during, and after the pandemic.
 
 \subsection{Identification Strategy}
 We are interested in two main outcomes related to business performance: (1) business survival during the COVID-19 pandemic, and (2) revenue growth over time. 
@@ -107,7 +107,7 @@ We examine all three components of the social capital index: Economic Connectedn
 The control variables include log employees in 2019 (for survival specifications) or log sales in 2019 (for growth specifications), along with state fixed effects and two-digit NAICS industry fixed effects. We include only one size control to avoid multicollinearity between sales and employment
 
 \subsection{OLS Specification}
-We begin with a simple OLS specification to establish the average treatment effects. For the survival, we estimte:
+We begin with a simple OLS specification to establish the average treatment effects. For the survival, we estimate the following:
 \begin{equation}
     Survival_{i,2024} = \alpha + \beta \cdot SC_{c} + \gamma \cdot ln(Emp_{i,2019})  + \theta_s + \mu_j + \epsilon_{ic}
 \end{equation}
@@ -307,7 +307,7 @@ It can be observed from Table \ref{tab:heterogeneity} that the effect of social 
 
 It is very interesting to note that Health Care \& Social Assistance (NAICS 62) shows a negative effect of social cohesion on firm survival, with a 2.4 percentage point decrease per standard deviation increase. This counterintuitive finding may reflect unique dynamics in the healthcare sector during the pandemic, such as increased regulatory pressures or shifts in demand that are not mitigated by social capital.
 
-To probe this deeper, we conduct a sub-industry level analysis. It is found that the information sector's positive effect is driven primarily through wireless telecommunications carriers. Given the work from home mandate during the pandemic and the rise of digital communication, this finding aligns with expectations.
+To probe this deeper, we conduct a sub-industry level analysis (results presented in Appendix A). It is found that the information sector's positive effect is driven primarily through wireless telecommunications carriers. Given the work from home mandate during the pandemic and the rise of digital communication, this finding aligns with expectations.
 
 Another striking result was in the retail sector where essential retail exhibited strong positive effects while non-essential retail such as electronics stores showed negative effects. Furthermore, the negative effect in healthcare was concentrated in the independent physician offices while trust based sub-industries such as nursing care facilities, childcare facilities, and mental health services showed a positive effect. 
 
@@ -346,7 +346,7 @@ Our findings have important implications for policymakers and business leaders. 
 
 Our central finding highlighted that in tight-knit communities, the ability to mobilize collective action and informal safety nets acts as a primary defense against exogenous shocks. This is what was labeled as social cohesion. Conversely, contrary to research about individual economic outcomes, economic connectedness served as an amplifier of business performance for the top-performing firms. For the firms at the bottom end of the sales growth distribution, it was actually detrimental.
 
-Methodologically, our results underscore the limitations of OLS in this sector of research. The application of double machine learning revealed that the estimates provided by the OLS suffered from bias regarding economic connectedness and civic engagement. By correcting for these non-linearities, we do learn that while economic connectedness does have a negative effect on firm survival, civic engagement acts as social goodwill that does confer survival benefits upon firms and has a small positive effect on their survival during exogenous shocks.
+Methodologically, our results underscore the limitations of OLS in this sector of research. The application of double machine learning revealed that the estimates provided by the OLS suffered from bias regarding economic connectedness and civic engagement. By correcting for these non-linearities, we do learn that while economic connectedness does have a negative effect on firm survival, civic engagement acts as a strategic complement that confers survival benefits on average, though our quantile analysis suggests these benefits are concentrated among high-performing firms, potentially acting as a costly distraction for struggling entrants.
 
 Given that the social capital data was built in 2022, we do realize the limitation that we cannot generalize for the temporal component of this causal effect. Future research avenues include:
 1. Building similar databases and indexes across different time periods, 
@@ -355,6 +355,15 @@ Given that the social capital data was built in 2022, we do realize the limitati
 4. Investigating the micro-level firm strategies that leverage social capital for resilience and growth.
 
 As economies face global shocks from an increasingly volatile world, it is important to understand what factors contribute to economic resilience and success. Our analysis can inform investors, business leaders, and policymakers about the type of social capital that can positively affect a community as well as where to direct capital. 
+
+\pagebreak
+\section*{Appendix A: Sub-Industry Level Heterogeneity Results}
+\begin{figure}[H    ]
+    \centering
+    \includegraphics[width=\textwidth]{../Output/Plots/Appendix A.png}
+    \caption{Sub-Industry Level Heterogeneous Effects of Social Cohesion on Firm Survival}
+    \label{fig:sub_industry_heterogeneity}
+\end{figure}
 
 \pagebreak
 \bibliography{references}
