@@ -13,7 +13,7 @@ def run_quantreg(overwrite = False):
     df = merged_combined(overwrite = overwrite)
     df = df.to_pandas()
 
-    data_2019 = df[df['file_year'] == 2019][['abi', 'fips', 'sales', 'employees', 'naics', 'ec']].copy()
+    data_2019 = df[df['file_year'] == 2019][['abi', 'fips', 'sales', 'employees', 'naics', 'ec', 'clustering', 'civic']].copy()
     data_2019 = data_2019.rename(columns={'sales': 'sales_2019', 'employees': 'emp_2019'})
 
     data_2024 = df[df['file_year'] == 2024][['abi', 'sales']].copy()
@@ -25,8 +25,11 @@ def run_quantreg(overwrite = False):
     # compute sales change
     merged['survived'] = (merged['sales_2024'] > 0).astype(int)
 
-    merged = merged.dropna(subset = ['sales_2019', 'ec', 'fips', 'emp_2019', 'naics'])
+    merged = merged.dropna(subset = ['sales_2019', 'ec', 'fips', 'emp_2019', 'naics', 'clustering', 'civic'])
     merged = merged[merged['sales_2019'] > 0]
+
+    # filter for survivors only (intensive margin)
+    merged = merged[merged['sales_2024'] > 0]
 
     # log sales
     merged['log_sales_2019'] = np.log1p(merged['sales_2019'])
@@ -35,6 +38,8 @@ def run_quantreg(overwrite = False):
 
     # standardize independent variables
     merged['ec_std'] = (merged['ec'] - merged['ec'].mean()) / merged['ec'].std()
+    merged['clustering_std'] = (merged['clustering'] - merged['clustering'].mean()) / merged['clustering'].std()
+    merged['civic_std'] = (merged['civic'] - merged['civic'].mean()) / merged['civic'].std()
     merged['log_emp_2019'] = np.log1p(merged['emp_2019'])
     merged['naics2'] = merged['naics'].str[:2]
 
@@ -44,25 +49,39 @@ def run_quantreg(overwrite = False):
     results = []
 
     for q in tqdm(quantiles, desc="   Quantiles", ncols=70):
-        X = merged[['ec_std', 'log_emp_2019', 'log_sales_2019']].assign(const=1)
+        X = merged[['ec_std', 'clustering_std', 'civic_std', 'log_sales_2019']].assign(const=1)
         model = QuantReg(merged['log_sales_change'], X)
         res = model.fit(q=q)
 
-        coef = res.params['ec_std']
-        se = res.bse['ec_std']
-        pval = res.pvalues['ec_std']
-
-        sig = '***' if pval < 0.01 else '**' if pval < 0.05 else '*' if pval < 0.1 else ''
-        print(f"   {q:<10.2f} {coef:>12.4f} {se:>12.4f} {pval:>10.4f} {sig:>5}")
-
-        results.append({'quantile': q, 'coef': coef, 'se': se, 'pval': pval})
+        results.append({
+            'quantile': q,
+            'ec_coef': res.params['ec_std'],
+            'ec_se': res.bse['ec_std'],
+            'ec_pval': res.pvalues['ec_std'],
+            'clustering_coef': res.params['clustering_std'],
+            'clustering_se': res.bse['clustering_std'],
+            'clustering_pval': res.pvalues['clustering_std'],
+            'civic_coef': res.params['civic_std'],
+            'civic_se': res.bse['civic_std'],
+            'civic_pval': res.pvalues['civic_std']
+        })
 
     results_df = pd.DataFrame(results)
 
-    coef_10 = results_df[results_df['quantile'] == 0.10]['coef'].values[0]
-    coef_90 = results_df[results_df['quantile'] == 0.90]['coef'].values[0]
+    print("\nEconomic Connectedness:")
+    for _, row in results_df.iterrows():
+        sig = '***' if row['ec_pval'] < 0.01 else '**' if row['ec_pval'] < 0.05 else '*' if row['ec_pval'] < 0.1 else ''
+        print(f"   {row['quantile']:<10.2f} {row['ec_coef']:>12.4f} {row['ec_se']:>12.4f} {row['ec_pval']:>10.4f} {sig:>5}")
 
-    print(results_df)
+    print("\nClustering:")
+    for _, row in results_df.iterrows():
+        sig = '***' if row['clustering_pval'] < 0.01 else '**' if row['clustering_pval'] < 0.05 else '*' if row['clustering_pval'] < 0.1 else ''
+        print(f"   {row['quantile']:<10.2f} {row['clustering_coef']:>12.4f} {row['clustering_se']:>12.4f} {row['clustering_pval']:>10.4f} {sig:>5}")
+
+    print("\nCivic Engagement:")
+    for _, row in results_df.iterrows():
+        sig = '***' if row['civic_pval'] < 0.01 else '**' if row['civic_pval'] < 0.05 else '*' if row['civic_pval'] < 0.1 else ''
+        print(f"   {row['quantile']:<10.2f} {row['civic_coef']:>12.4f} {row['civic_se']:>12.4f} {row['civic_pval']:>10.4f} {sig:>5}")
 
     return results_df, merged
 

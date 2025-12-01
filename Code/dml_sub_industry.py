@@ -78,6 +78,9 @@ def run_sub_industry_dml(overwrite = False):
 
     results_df = pd.DataFrame(results).sort_values('coef', ascending=False)
     print(results_df)
+    path = paths()['data']
+    filename = os.path.join(path, 'dml_sub_industry_results.csv')
+    results_df.to_csv(filename, index=False)
     return results_df
 
 
