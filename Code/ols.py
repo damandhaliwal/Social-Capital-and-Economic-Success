@@ -8,7 +8,7 @@ import numpy as np
 
 from data_prep import merged_survival, merged_combined
 
-def run_ols_survival(overwrite = False):
+def run_ols_survival(formula, overwrite = False):
     data = merged_survival(overwrite = overwrite)
 
     data = data.to_pandas()
@@ -28,14 +28,12 @@ def run_ols_survival(overwrite = False):
     data['log_sales'] = np.log1p(data['sales'])
     data['state'] = data['fips'].str[:2]
 
-    formula = "survived_2024 ~ ec_std + log_sales + log_employees + C(state) + C(naics2)"
-
     model = smf.ols(formula = formula, data = data).fit(cov_type = 'cluster', cov_kwds = {'groups': data['fips']})
     print(model.summary())
 
     return model
 
-def run_ols_main(overwrite = False):
+def run_ols_main(formula, overwrite = False):
     df = merged_combined(overwrite = overwrite)
     df = df.to_pandas()
 
@@ -75,14 +73,25 @@ def run_ols_main(overwrite = False):
     merged['state'] = merged['fips'].astype(str).str[:2]
     merged['naics2'] = merged['naics'].astype(str).str[:2]
 
-    # run regression
-    formula = "log_sales_change ~ ec_std + log_sales_2019 + log_emp_2019 + C(state) + C(naics2)"
-    
     model = smf.ols(formula = formula, data = merged).fit(cov_type = 'cluster', cov_kwds = {'groups': merged['fips']})
     print(model.summary())
 
     return model
 
+# Survival formulas
+SURV_EC = "survived_2024 ~ ec_std + log_employees + C(state) + C(naics2)"
+SURV_COH = "survived_2024 ~ clustering_std + log_employees + C(state) + C(naics2)"
+SURV_CIV = "survived_2024 ~ civic_std + log_employees + C(state) + C(naics2)"
+SURV_JOINT = "survived_2024 ~ ec_std + clustering_std + civic_std + log_employees + C(state) + C(naics2)"
+
+# Growth formulas
+GROWTH_EC = "log_sales_change ~ ec_std + log_sales_2019 + C(state) + C(naics2)"
+GROWTH_COH = "log_sales_change ~ clustering_std + log_sales_2019 + C(state) + C(naics2)"
+GROWTH_CIV = "log_sales_change ~ civic_std + log_sales_2019 + C(state) + C(naics2)"
+GROWTH_JOINT = "log_sales_change ~ ec_std + clustering_std + civic_std + log_sales_2019 + C(state) + C(naics2)"
+
 if __name__ == "__main__":
-    run_ols_main()
-    
+    run_ols_survival(SURV_JOINT)
+    run_ols_survival(SURV_EC)
+    run_ols_survival(SURV_COH)
+    run_ols_survival(SURV_CIV)
