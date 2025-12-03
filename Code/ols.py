@@ -95,3 +95,7 @@ if __name__ == "__main__":
     run_ols_survival(SURV_EC)
     run_ols_survival(SURV_COH)
     run_ols_survival(SURV_CIV)
+    run_ols_main(GROWTH_JOINT)
+    run_ols_main(GROWTH_EC)
+    run_ols_main(GROWTH_COH)
+    run_ols_main(GROWTH_CIV)

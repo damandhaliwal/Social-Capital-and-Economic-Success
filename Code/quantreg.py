@@ -6,8 +6,10 @@ import pandas as pd
 import numpy as np
 from statsmodels.regression.quantile_regression import QuantReg
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 from data_prep import merged_combined
+from utils import paths
 
 def run_quantreg(overwrite = False):
     df = merged_combined(overwrite = overwrite)
@@ -83,11 +85,13 @@ def run_quantreg(overwrite = False):
         sig = '***' if row['civic_pval'] < 0.01 else '**' if row['civic_pval'] < 0.05 else '*' if row['civic_pval'] < 0.1 else ''
         print(f"   {row['quantile']:<10.2f} {row['civic_coef']:>12.4f} {row['civic_se']:>12.4f} {row['civic_pval']:>10.4f} {sig:>5}")
 
+    # save results
+    path = paths()['data']
+    filename = os.path.join(path, 'quant_reg_results.csv')
+    results_df.to_csv(filename, index=False)
+
     return results_df, merged
 
-# ... [Your existing code from above goes here] ...
-
-import matplotlib.pyplot as plt
 
 def plot_quantile_results(results_df):
 
@@ -96,34 +100,29 @@ def plot_quantile_results(results_df):
     
     # Variables to plot mapping
     variables = [
-        {'col': 'ec', 'title': 'Economic Connectedness', 'color': '#1f77b4'}, # Blue
-        {'col': 'clustering', 'title': 'Cohesion (Clustering)', 'color': '#d62728'}, # Red
-        {'col': 'civic', 'title': 'Civic Engagement', 'color': '#2ca02c'}  # Green
+        {'col': 'ec', 'title': 'Economic Connectedness', 'color': '#1f77b4'},
+        {'col': 'clustering', 'title': 'Cohesion (Clustering)', 'color': '#d62728'},
+        {'col': 'civic', 'title': 'Civic Engagement', 'color': '#2ca02c'} 
     ]
     
     for i, var in enumerate(variables):
         ax = axes[i]
         col_name = var['col']
         
-        # Extract data
         quantiles = results_df['quantile']
         coefs = results_df[f'{col_name}_coef']
         errors = results_df[f'{col_name}_se']
         
-        # Calculate 95% Confidence Intervals
         upper = coefs + 1.96 * errors
         lower = coefs - 1.96 * errors
         
         # Plot coefficients
         ax.plot(quantiles, coefs, color=var['color'], lw=2, label='Quantile Estimate')
         
-        # Fill Confidence Interval
         ax.fill_between(quantiles, lower, upper, color=var['color'], alpha=0.2, label='95% CI')
         
-        # Add reference line at 0
         ax.axhline(0, color='black', linestyle='--', linewidth=1, alpha=0.7)
         
-        # Formatting
         ax.set_title(var['title'], fontsize=14, fontweight='bold')
         ax.set_xlabel('Quantile ($tau$)', fontsize=12)
         if i == 0:
@@ -132,7 +131,9 @@ def plot_quantile_results(results_df):
         ax.set_xticks(np.arange(0.1, 1.0, 0.1))
         
     plt.tight_layout()
-    plt.show()
+    path = paths()['figures']
+    filename = os.path.join(path, 'quantile_regression_results.png')
+    fig.savefig(filename, dpi = 600)
 
 if __name__ == "__main__":
     results, data = run_quantreg() 
