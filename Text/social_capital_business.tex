@@ -19,6 +19,16 @@
 \usepackage{enumitem}
 \usepackage[T1]{fontenc}
 
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    frame=none,
+}
+
 \setstretch{1.5}
 
 \begin{document}
@@ -67,7 +77,7 @@ Recently, \cite{chetty_social_2022-1} utilized a novel dataset from Facebook tha
 
 This paper aims to build upon the findings of \cite{chetty_social_2022-1} by exploring the relationship between social capital and business performance, which has not been extensively studied in the existing literature. We will investigate two aspects of social capital's effect on business performance: (1) the likelihood of business survival given an exogenous shock (the COVID-19 pandemic), and (2) the revenue growth of businesses over time. By analyzing these dimensions, we aim to provide a comprehensive understanding of how social capital influences business outcomes.
 
-The research question is motivated by two main questions: First, does social capital contribute to the prosperity of counties by enhancing the performance of local businesses? Second, can social capital act as a buffer for businesses during economic downturns or crises, such as the COVID-19 pandemic? The results of this study could have significant implications for policymakers and business leaders, as they highlight the importance of fostering social capital within communities to support economic growth and resilience as well as inform strategies for capital allocation. The study may also motivate individals and businesses to invest in building and maintaining strong social networks.
+The research question is motivated by two main questions: First, does social capital contribute to the prosperity of counties by enhancing the performance of local businesses? Second, can social capital act as a buffer for businesses during economic downturns or crises, such as the COVID-19 pandemic? The results of this study could have significant implications for policymakers and business leaders, as they highlight the importance of fostering social capital within communities to support economic growth and resilience as well as inform strategies for capital allocation. The study may also motivate individuals and businesses to invest in building and maintaining strong social networks.
 
 The paper is structured as follows: Section 2 reviews related literature in depth and defines the scope of the study in the context of existing research. Section 3 describes the data sources, including the social capital index, in depth and outlines the empirical model and identification strategy. Section 4 presents the main results and robustness checks. Finally, Section 5 concludes with a summary of findings and discusses potential avenues for future research.
 
@@ -78,7 +88,7 @@ The idea was then studied extensively by other scholars such as \cite{putnam_soc
 
 Over the years, there have been numerous economic studies aiming to model and quantify social capital and its effects on various economic outcomes. \cite{dasgupta2003social} provides a rigorous economic model of social capital. The central contribution of the paper is to show how social capital can be modeled into standard macroeconomic production functions. The author also argues that dense social networks can inhibit the flow of capital and labour and might lead to equilibria that are suboptimal for economic growth. 
 
-More recently, \cite{chetty_social_2022-1} and \cite{chetty_social_2022-2} utilized a novel dataset from Facebook that included over 21 billion social connections and modern computational techniques to form a first of its kind social capital index at the college, county, high school, and zip code levels across the United States. The authors meaningful results that revitalized interest in social capital research. In particular, they found that children who grow up in areas where cross-class interactions are common tend to have significantly higher upward income mobility. They also found that social capital tends to be highly stratified by socioeconomic status and that differences in this economic connectedness accounts for the relationships between upward mobility and factors such as poverty and racial segreagation.
+More recently, \cite{chetty_social_2022-1} and \cite{chetty_social_2022-2} utilized a novel dataset from Facebook that included over 21 billion social connections and modern computational techniques to form a first of its kind social capital index at the college, county, high school, and zip code levels across the United States. The authors meaningful results that revitalized interest in social capital research. In particular, they found that children who grow up in areas where cross-class interactions are common tend to have significantly higher upward income mobility. They also found that social capital tends to be highly stratified by socioeconomic status and that differences in this economic connectedness accounts for the relationships between upward mobility and factors such as poverty and racial segregation.
 
 There has also been research exploring the relationship between social capital and public health outcomes. \cite{makridis_how_2021} investigate whether areas with higher social capital experienced better health outcomes during the COVID-19 pandemic. They found that moving from the 25th to the 75th percentile of social capital is associated with a 18\% reduction in COVID-19 cases and a 5.7\% reduction in COVID-19 deaths. 
 
@@ -296,7 +306,7 @@ Inference & Clustered SE & Neyman Orthogonal \\
 \end{tablenotes}
 \end{table}
 
-The DML results refine the OLS findings by flexibly controlling for confounders. As shown in Table \ref{tab:ols_vs_dml}, the DML estimates (Column 2) indicate that all three components of social capital significantly affect firm survival, with cohesion having the largest effect (0.99 percentage points per standard deviation). Economic connectedness still shows a negative effect but it is more statistically signficant while civic engagement now shows a positive and significant effect.
+The DML results refine the OLS findings by flexibly controlling for confounders. As shown in Table \ref{tab:ols_vs_dml}, the DML estimates (Column 2) indicate that all three components of social capital significantly affect firm survival, with cohesion having the largest effect (0.99 percentage points per standard deviation). Economic connectedness still shows a negative effect but it is more statistically significant while civic engagement now shows a positive and significant effect.
 
 This suggests that OLS may have suffered from bias or was unable to capture the non-linearities, which DML helped to address. The DML approach provides more credible estimates of the causal effects of social capital on firm survival. Given that cohesion consistently shows the strongest positive effect, we focus on it for the subsequent heterogeneity analysis.
 
@@ -376,11 +386,11 @@ For the analysis concerning firm performance during a crisis, it is clear that s
 
 Conversely, while economic connectedness was one of the key drivers of upward economic mobility for individuals, it had a small but significant negative effect on the survival of the firms during a crisis. It's also revealed that economic connectedness prefers to support businesses that are operating at a higher level and support the 90th quantile of the performance distribution. 
 
-It should also be noted that the protective power of social capital was not uniform across the economy. Our heterogeneity analysis showed that the benefits of social capital were concentrated in the information and transportation sectors that rely on rapid information flow and coordination. There was also a surprising negative effect in the healthcare sector where higher social capital was associated with lower survival rates. This could be due to the exogenous shock being a healthcare crisis and thus there was higher stress in these industries. 
+It should also be noted that the predictive power of social capital was not uniform across the economy. Our heterogeneity analysis showed that the benefits of social capital were concentrated in the information and transportation sectors that rely on rapid information flow and coordination. There was also a surprising negative effect in the healthcare sector where higher social capital was associated with lower survival rates. This could be due to the exogenous shock being a healthcare crisis and thus there was higher stress in these industries. 
 
 
 \section{Conclusion}
-This paper investigates the role of social capital in influencing business performance. Specifically, we leverage the exogenous economic shock of the 2020 COVID-19 pandemic to decompose the causal effects of social capital on firm resilience and to study whether social capital has a direct effect on firm performance over the years. By integrating high-dimensional administrative data with novel measures on social structure and applying double machine learning quantile regressions and OLS frameworks, we challenged the view of social capital as a one-size-fits-all social surplus or a social negative. Instead, our results show that social capital is a complex landscape with different dimensions of social structure serving competing economic functions. 
+This paper investigates the role of social capital in influencing business performance. Specifically, we leverage the exogenous economic shock of the 2020 COVID-19 pandemic to decompose the causal effects of social capital on firm resilience and to study whether social capital has a direct effect on firm performance over the years. By integrating high-dimensional business administrative data with novel measures on social structure and applying double machine learning quantile regressions and OLS frameworks, we challenged the view of social capital as a one-size-fits-all social surplus or a social negative. Instead, our results show that social capital is a complex landscape with different dimensions of social structure serving competing economic functions. 
 
 Our findings have important implications for policymakers and business leaders. First, fostering social cohesion within communities can enhance the resilience of local businesses during economic downturns. Second, strategies to build economic connectedness should be tailored to support high-performing firms, while recognizing that such connections may not benefit all businesses equally. Finally, the heterogeneous effects across industries highlight the need for sector-specific approaches to leveraging social capital for economic development.
 
@@ -409,4 +419,28 @@ As economies face global shocks from an increasingly volatile world, it is impor
 \pagebreak
 \bibliography{references}
 \bibliographystyle{chicago}
+
+\pagebreak
+\section*{Appendix B: Code Repository}
+The code used for data processing, analysis, and visualization in this paper is available at the following GitHub repository: \url{https://github.com/damandhaliwal/Social-Capital-and-Economic-Success}
+
+Consistent with the guidelines provided, code has been copy pasted below for reference. The package is organized into multiple files for clarity and modularity, it is recommended to refer to the GitHub repository for clarity.
+
+\subsection{Data Preparation}
+\lstinputlisting{../Code/data_prep.py}
+
+\subsection{OLS}
+\lstinputlisting{../Code/ols.py}
+
+\subsection{DML}
+\lstinputlisting{../Code/dml.py}
+\lstinputlisting{../Code/dml_sub_industry.py}
+
+\subsection{Quantile Regression}
+\lstinputlisting{../Code/quantreg.py}
+
+\subsection{Data Description and Utilities}
+\lstinputlisting{../Code/utils.py}
+\lstinputlisting{../Code/data_description.py}
+
 \end{document}
