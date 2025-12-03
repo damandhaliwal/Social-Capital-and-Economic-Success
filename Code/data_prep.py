@@ -12,36 +12,18 @@ import re
 
 
 def load_data(overwrite = False):
-    """
-    Load or create business panel and survival datasets.
-
-    Parameters:
-    -----------
-    overwrite : bool, default False
-        If False, loads existing parquet files.
-        If True, rebuilds the datasets from source files.
-
-    Returns:
-    --------
-    tuple of (combined, survival)
-        combined: Full panel dataset with all years
-        survival: Survival analysis dataset based on 2019 baseline
-    """
     path = paths()
     output_dir = path['data']
 
     combined_path = os.path.join(output_dir, "business_panel_full.parquet")
     survival_path = os.path.join(output_dir, "business_survival_2019.parquet")
 
-    # If not overwriting, just load existing files
     if not overwrite:
-        print("Loading existing data files...")
         combined = pl.read_parquet(combined_path)
         survival = pl.read_parquet(survival_path)
         return combined, survival
 
     # Otherwise, rebuild from source
-    print("Rebuilding data from source files...")
     data_dir = paths()['data_input']
     bus_data_dir = os.path.join(data_dir, 'business_data')
     search_pattern = os.path.join(bus_data_dir, "*_Business_Academic*.txt")
@@ -112,20 +94,10 @@ def load_data(overwrite = False):
     # save full csv
     combined.write_csv(os.path.join(output_dir, "business_panel_full.csv"))
 
-    print("Data saved successfully!")
-
     return combined, survival
 
 # social capital data
 def load_social_capital():
-    """
-    Load social capital dataset.
-
-    Returns:
-    --------
-    pl.DataFrame
-        Social capital data with FIPS codes.
-    """
     path = paths()
     sc_path = os.path.join(path['data_input'], 'OI_data', 'social_capital_county.csv')
     
@@ -143,22 +115,12 @@ def load_social_capital():
 
 # merge the datasets
 def merged_survival(overwrite = False):
-    """
-    Merge business survival data with social capital data.
-
-    Returns:
-    --------
-    pl.DataFrame
-        Merged dataset.
-    """
     path = paths()
     output_path = os.path.join(path['data'], "survival_merged.parquet")
     
     if not overwrite and os.path.exists(output_path):
-        print("Loading existing merged data...")
         return pl.read_parquet(output_path)
     
-    print("Building merged dataset...")
     _ , survival = load_data(overwrite=False)
     sc = load_social_capital()
     
@@ -171,27 +133,16 @@ def merged_survival(overwrite = False):
     
     # Save
     merged.write_parquet(output_path)
-    print(f"✓ Saved: {output_path}")
     
     return merged
 
 def merged_combined(overwrite = False):
-    """
-    Merge business combined data with social capital data.
-
-    Returns:
-    --------
-    pl.DataFrame
-        Merged dataset.
-    """
     path = paths()
     output_path = os.path.join(path['data'], "combined_merged.parquet")
     
     if not overwrite and os.path.exists(output_path):
-        print("Loading existing merged data...")
         return pl.read_parquet(output_path)
     
-    print("Building merged dataset...")
     combined, _ = load_data(overwrite=False)
     sc = load_social_capital()
     
@@ -204,6 +155,5 @@ def merged_combined(overwrite = False):
     
     # Save
     merged.write_parquet(output_path)
-    print(f"✓ Saved: {output_path}")
     
     return merged
